@@ -1,0 +1,20 @@
+@startuml
+group create replicaset 
+    kubectl -> apiserver: apply new replica set
+    apiserver -> etcd: create replicaset
+    etcd -> apiserver: repicaset create event
+end
+group controller_manager list-watch
+    apiserver -> controller_manager: repicaset create event
+    controller_manager -> apiserver: create pod
+    apiserver -> etcd: create pod
+    etcd -> apiserver: pod create evnet
+end
+group scheduler list-watch
+    apiserver -> scheduler: pod create event
+    scheduler -> apiserver: update pod event
+end
+group kubelet list-watch
+    apiserver -> kubelet: pod create event
+end
+@enduml
